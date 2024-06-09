@@ -15,7 +15,11 @@
                         </div>
                     @endif
 
-                    <a href="{{ route('index') }}">{{ __('Click here!') }}</a>
+                    <div>
+                        <button class="btn btn-primary">
+                            <a href="{{ route('index') }}" class="text-decoration-none text-white">{{ __('Index') }}</a>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
