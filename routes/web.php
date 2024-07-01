@@ -26,8 +26,15 @@ Route::prefix('/')->group(function () {
     Route::get('/index', [App\Http\Controllers\AccountController::class, 'index'])->name('index');
 
     Route::prefix('/index')->group(function () {
-        Route::get('/report', [App\Http\Controllers\AccountController::class, 'report'])->name('report');
+        Route::prefix('/report')->group(function () {
+            Route::get('/', [App\Http\Controllers\AccountController::class, 'report'])->name('report');
+            Route::get('/{id}', [App\Http\Controllers\AccountController::class, 'report'])->name('report.id');
+        });
+
         Route::get('/add-expense', [App\Http\Controllers\AccountController::class, 'add_expense'])->name('add-expense');
         Route::post('/save-expense', [App\Http\Controllers\AccountController::class, 'store_expense'])->name('save-expense');
+        Route::get('/edit-expense/{id}', [App\Http\Controllers\AccountController::class, 'edit_expense'])->name('edit-expense');
+        Route::post('/update-expense/{id}', [App\Http\Controllers\AccountController::class, 'update_expense'])->name('update-expense');
+        Route::get('/delete-expense/{id}', [App\Http\Controllers\AccountController::class, 'delete_expense'])->name('delete-expense');
     });
 });

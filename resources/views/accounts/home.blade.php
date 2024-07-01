@@ -6,6 +6,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Dashboard') }}</div>
+                <!-- <div class="card-header">{{ $userData->name }}</div> -->
 
                 <div class="card-body">
                     @if (session('status'))
@@ -14,7 +15,11 @@
                         </div>
                     @endif
 
-                    <a href="{{ route('index') }}">{{ __('Click here!') }}</a>
+                    <div>
+                        <button class="btn btn-primary">
+                            <a href="{{ route('index') }}" class="text-decoration-none text-white">{{ __('Index') }}</a>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
