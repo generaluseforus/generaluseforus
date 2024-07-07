@@ -13,13 +13,16 @@
                         </div>
                     @endif
 
-                    <div>
-                        <button class="btn btn-primary">
-                            <a href="{{ route('report') }}" class="text-decoration-none text-white">{{ __('View Report') }}</a>
-                        </button>
-                        <button class="btn btn-primary">
-                            <a href="{{ route('add-expense') }}" class="text-decoration-none text-white">{{ __('Add Expense') }}</a>
-                        </button>
+                    <div class="row align-items-center">
+                        <div class="col-md-8 fs-4">Accounts</div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary">
+                                <a href="{{ route('report') }}" class="text-decoration-none text-white">{{ __('View Report') }}</a>
+                            </button>
+                            <button class="btn btn-primary">
+                                <a href="{{ route('add-expense') }}" class="text-decoration-none text-white">{{ __('Add Expense') }}</a>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
