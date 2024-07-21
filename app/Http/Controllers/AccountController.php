@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
+    protected $userData;
     /**
      * Create a new controller instance.
      *
@@ -16,6 +19,11 @@ class AccountController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->middleware(function ($request, $next) {
+            $this->userData = Auth::user();
+            return $next($request);
+        });
     }
 
     /**
@@ -25,7 +33,7 @@ class AccountController extends Controller
      */
     public function dashboard()
     {
-        return view('accounts/home');
+        return view('accounts/home', ['userData' => $this->userData]);
     }
 
     public function index()
@@ -33,27 +41,61 @@ class AccountController extends Controller
         return view('accounts/index');
     }
 
-    public function report(Account $account)
+    public function report(Account $account, $id = NULL)
     {
-        $data = Account::all();
+        if($id == NULL || $id == 'all') {
+            $accountData = Account::where('email', $this->userData['email'])->get();
+        } else {
+            $accountData = Account::where('email', $this->userData['email'])->whereYear('date', $id)->get();
+        }
 
-        return view('accounts/report', ['accountData' => $data]);
+        $distinctYears = Account::selectRaw('YEAR(date) AS year')->where('email', $this->userData['email'])->distinct()->get();
+
+        return view('accounts/report', ['accountData' => $accountData, 'years' => $distinctYears]);
     }
 
     public function add_expense()
     {
-        return view('accounts/add-expense');
+        return view('accounts/add-expense', ['actionData' => '', 'action' => 'add']);
     }
 
     public function store_expense(StoreAccountRequest $request)
     {
         $model = new Account();
         $model->date = $request->date;
+        $model->email = $this->userData['email'];
         $model->amount_spent = $request->amount_spent;
         $model->description = $request->description;
         $model->save();
 
         return redirect()->route('report')->with('success', 'Expense added.');
+    }
+
+    public function edit_expense($id)
+    {
+        $actionData = Account::where('id', $id)->get();
+
+        return view('accounts/add-expense', ['actionData' => $actionData, 'action' => 'edit']);
+    }
+
+    public function update_expense(UpdateAccountRequest $request, $id)
+    {
+        Account::where('id', $id)
+                ->where('email', $this->userData['email'])
+                ->update([
+                    'date' => $request->date,
+                    'amount_spent' => $request->amount_spent,
+                    'description' => $request->description
+                ]);
+
+        return redirect()->route('report')->with('success', 'Expense updated.');
+    }
+
+    public function delete_expense($id)
+    {
+        Account::where('id', $id)->delete();
+
+        return redirect()->route('report')->with('success', 'Expense deleted.');
     }
 
     /**
