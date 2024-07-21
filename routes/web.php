@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OTPController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,4 +38,15 @@ Route::prefix('/')->group(function () {
         Route::post('/update-expense/{id}', [App\Http\Controllers\AccountController::class, 'update_expense'])->name('update-expense');
         Route::get('/delete-expense/{id}', [App\Http\Controllers\AccountController::class, 'delete_expense'])->name('delete-expense');
     });
+
+    Route::get('/mail', [App\Http\Controllers\AllMailController::class, 'sendMail'])->name('mail');
+
+    // Route to show the OTP form
+    Route::get('/otp', [OTPController::class, 'show'])->name('otp.show');
+
+    // Route to handle OTP submission
+    Route::post('/otp', [OTPController::class, 'sendOTP'])->name('otp.send');
+
+    // Route to verify OTP
+    Route::post('/otp/verify', [OTPController::class, 'verifyOTP'])->name('otp.verify');
 });
